@@ -8,10 +8,9 @@ import mesh2sdf.core
 from scipy.spatial import cKDTree
 
 
-FRONT3DMESHESMANIFOLD = '/mnt/d/Datasets/3D_FRONT/SAVEDIR' # 对应SELECTED_FRONT_SCENES”的路径
-# FRONT3DJSON = '/home/ps/Dataset/3D-FRONT'
-FUTURE3DMODEL = '/mnt/d/Datasets/3D_FUTURE/Models' # 对应“SELECTED_FUTURE_MODELS”的路径
-SAVEDIR = '/mnt/d/Datasets/chunked_data_lowres'
+FRONT3DMESHESMANIFOLD = '/home/lijiarui/Desktop/scene_factor/SceneFactor/assets/SELECTED_FRONT_SCENES'
+FUTURE3DMODEL = '/home/lijiarui/Desktop/scene_factor/SceneFactor/assets/SELECTED_FUTURE_MODELS'
+SAVEDIR = '/home/lijiarui/Desktop/scene_factor/SceneFactor/assets/chunked_data_lowres'
 os.makedirs(SAVEDIR, exist_ok=True)
 
 
@@ -126,6 +125,7 @@ def compute_chunks(num_proc=1, proc=0):
 
 
     for obj_id in tqdm(all_obj_ids):
+        print(f"\n开始处理场景: {obj_id}")
         try:
 
             if obj_id not in valid_scenes:
@@ -140,10 +140,12 @@ def compute_chunks(num_proc=1, proc=0):
 
             os.makedirs(LOCAL_SAVEDIR, exist_ok=True)
 
-            # 跳过家具模型大于50个的场景以防内存溢出
-            if len(os.listdir(os.path.join(FRONT3DMESHESMANIFOLD, obj_id))) >= 50:
-                print(f"{obj_id} : Scene with {len(all_mesh_furniture)} objs. Memory overflow protection.")
-                continue   
+            # 跳过家具数量大于等于50的场景以防内存溢出
+            with open(os.path.join(FRONT3DMESHESMANIFOLD, obj_id, 'furniture_jids.json')) as f:
+                num_furniture = len(json.load(f))
+            if num_furniture >= 50:
+                print(f"{obj_id} : {num_furniture} furniture items. Skipping memory overflow protection.")
+                continue
         
             try:
                 mesh_scene = trimesh.load(os.path.join(FRONT3DMESHESMANIFOLD, obj_id, 'scene.obj'))
