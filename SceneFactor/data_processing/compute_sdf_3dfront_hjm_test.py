@@ -186,7 +186,7 @@ def compute_chunks(num_proc=1, proc=0):
         with open(os.path.join(FRONT3DMESHESMANIFOLD, obj_id, 'furniture_jids.json')) as f:
             jids = json.load(f)
             num_furniture = len(jids)
-        if num_furniture >= 100:
+        if num_furniture >= 90:
             print(f"{obj_id} : {num_furniture} furniture items. Skipping memory overflow protection.")
             continue
 
