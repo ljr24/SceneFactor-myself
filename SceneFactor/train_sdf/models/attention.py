@@ -330,7 +330,7 @@ class BasicTransformerBlock(nn.Module):
             # text branch
             out_x, _ = self.attn1(self.norm1(x))
             x = out_x + x
-            out_x, attn = self.attn2(self.norm2(x))
+            out_x, attn = self.attn2(self.norm2(x), context=context)
             x = out_x + x
             x = self.ff(self.norm3(x)) + x
         elif self.mode == 'geometry':
